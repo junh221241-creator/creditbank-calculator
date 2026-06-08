@@ -79,8 +79,8 @@ def compute_remaining(completed: dict, required: dict) -> dict:
     return {k: max(0, required[k] - completed.get(k, 0)) for k in keys}
 
 
-def render_progress(completed: dict, required: dict, label: str):
-    remaining = compute_remaining(completed, required)
+def render_progress(completed: dict, required: int, label: str):
+    remaining = compute_remaining(completed, {label: required})[label]
     done = required - remaining
     st.metric(
         label=f"{label} 이수 현황",
