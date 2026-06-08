@@ -79,15 +79,15 @@ def compute_remaining(completed: dict, required: dict) -> dict:
     return {k: max(0, required[k] - completed.get(k, 0)) for k in keys}
 
 
-def render_progress(completed: dict, required: int, label: str):
-    remaining = compute_remaining(completed, {label: required})[label]
-    done = required - remaining
+def render_progress(completed: dict, required: dict, label: str) -> None:
+    remaining = compute_remaining(completed, required)[label]
+    done = required[label] - remaining
     st.metric(
         label=f"{label} 이수 현황",
-        value=f"{done} / {required}",
+        value=f"{done} / {required[label]}",
         delta=f"남은 {remaining}학점",
     )
-    st.progress(min(1.0, done / max(1, required)))
+    st.progress(min(1.0, done / max(1, required[label])))
 
 
 def main():
@@ -199,7 +199,7 @@ def main():
         cols = st.columns(len(remaining))
         for c, (k, v) in zip(cols, remaining.items()):
             with c:
-                render_progress(completed, requirements[k], k)
+                render_progress(completed, requirements, k)
 
         st.subheader("상세 요약")
         summary_rows = []
